@@ -1,9 +1,12 @@
 package com.example.githubtracker.sign_in.presentation
 
 import android.app.Activity
+import android.content.SharedPreferences
 import androidx.lifecycle.ViewModel
 import com.example.githubtracker.common.Resource
+import com.example.githubtracker.common.converters.toJson
 import com.example.githubtracker.sign_in.domain.model.UserData
+import com.example.githubtracker.util.DataStoreUtils
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.OAuthCredential
 import com.google.firebase.auth.OAuthProvider
@@ -15,6 +18,7 @@ import javax.inject.Inject
 @HiltViewModel
 class SignInViewModel @Inject constructor(
     private val firebaseAuth: FirebaseAuth,
+    private val preference: DataStoreUtils
 ) : ViewModel() {
     private var _authState = MutableStateFlow<Resource<UserData>>(Resource.Loading())
     val authState = _authState.asStateFlow()
@@ -33,12 +37,14 @@ class SignInViewModel @Inject constructor(
                     val accessToken = credential.accessToken.orEmpty()
 
                     val user = UserData(
-                        accessToken, name, profilePicture
+                        accessToken, name, profilePicture.toString()
                     )
 
                     _authState.value = Resource.Success(
                         data = user
                     )
+                    val jsonUser = user.toJson()
+                    preference.saveData("user", jsonUser.orEmpty())
                 }
 
             }.addOnFailureListener { exception ->

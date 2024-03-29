@@ -26,6 +26,8 @@ room = "2.6.1"
 googleServices = "4.4.1"
 firebaseAuth = "22.3.1"
 datastore-preferences = "1.0.0"
+gson = "2.10.1"
+coil-compose = "2.0.0-rc01"
 
 
 
@@ -73,7 +75,8 @@ firebase-auth = { group = "com.google.firebase", name = "firebase-auth", version
 
 datastore-preferences = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "datastore-preferences" }
 material-extended = { group = "androidx.compose.material", name = "material-icons-extended", version.ref = "material-extended" }
-
+gson = { group = "com.google.code.gson", name = "gson", version.ref = "gson" }
+coil-compose = { group = "io.coil-kt", name = "coil-compose", version.ref = "coil-compose" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

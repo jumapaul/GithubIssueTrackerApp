@@ -10,5 +10,5 @@ data class SignInResult(
 data class UserData(
     val accessToken: String,
     val userName: String?,
-    val profilePicture: Uri?
+    val profilePicture: String?
 )

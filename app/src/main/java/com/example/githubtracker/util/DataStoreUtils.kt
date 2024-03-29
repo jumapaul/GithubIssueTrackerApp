@@ -1,15 +1,26 @@
 package com.example.githubtracker.util
 
 import android.content.Context
-import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.core.booleanPreferencesKey
-import androidx.datastore.preferences.preferencesDataStore
+import android.content.SharedPreferences
+import com.example.githubtracker.sign_in.domain.model.UserData
+import dagger.Provides
+import dagger.hilt.android.qualifiers.ApplicationContext
+import javax.inject.Inject
+import javax.inject.Singleton
 
-val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name="user")
-class DataStoreUtils(context: Context) {
+@Singleton
+class DataStoreUtils @Inject constructor(@ApplicationContext context: Context) {
 
-//    private objectPreferenceKey{
-//        val saveUserData = booleanPreferencesKey()
-//    }
+    private val sharedPreferences: SharedPreferences =
+        context.getSharedPreferences("user", Context.MODE_PRIVATE)
+
+    fun saveData(key: String, userData: String) {
+        val editor = sharedPreferences.edit()
+        editor.putString(key, userData)
+        editor.apply()
+    }
+
+    fun getUserData(key: String, defaultValue: String): String {
+        return sharedPreferences.getString(key, defaultValue) ?: defaultValue
+    }
 }

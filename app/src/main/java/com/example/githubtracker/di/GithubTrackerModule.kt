@@ -2,6 +2,7 @@ package com.example.githubtracker.di
 
 import android.app.Activity
 import android.content.Context
+import android.content.SharedPreferences
 import com.example.githubtracker.util.DataStoreUtils
 import com.google.firebase.auth.FirebaseAuth
 import dagger.Module
@@ -28,7 +29,9 @@ object GithubTrackerModule {
 
     @Provides
     @Singleton
-    fun providesDatastore(
+    fun provideSharedPreference(
         @ApplicationContext context: Context
-    ) = DataStoreUtils(context)
+    ): SharedPreferences {
+        return context.getSharedPreferences("user", Context.MODE_PRIVATE)
+    }
 }

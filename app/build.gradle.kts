@@ -101,4 +101,10 @@ dependencies {
 
     //DataStore
     implementation(libs.datastore.preferences)
+
+    //gson
+    implementation(libs.gson)
+
+    //glide
+    implementation(libs.coil.compose)
 }

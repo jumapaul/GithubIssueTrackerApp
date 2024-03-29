@@ -34,7 +34,7 @@ class MainActivity : ComponentActivity() {
 
                     NavigationGraph(
                         navHostController = navHostController,
-                        startDestination = NavigationRoutes.SignInScreen.routes,
+                        startDestination = NavigationRoutes.HomeScreen.routes,
                         activity = activity
                     )
                 }
