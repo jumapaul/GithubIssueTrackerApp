@@ -1,4 +1,4 @@
-package com.example.githubtracker
+package com.example.githubtracker.ui
 
 import android.app.Activity
 import android.os.Bundle
@@ -13,8 +13,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.rememberNavController
-import com.example.githubtracker.navigation.NavigationGraph
-import com.example.githubtracker.navigation.NavigationRoutes
+import com.example.githubtracker.presentation.navigation.NavigationGraph
+import com.example.githubtracker.presentation.navigation.NavigationRoutes
 import com.example.githubtracker.ui.theme.GithubTrackerTheme
 import dagger.hilt.android.AndroidEntryPoint
 

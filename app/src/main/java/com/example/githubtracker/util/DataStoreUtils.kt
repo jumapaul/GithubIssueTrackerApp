@@ -2,8 +2,6 @@ package com.example.githubtracker.util
 
 import android.content.Context
 import android.content.SharedPreferences
-import com.example.githubtracker.sign_in.domain.model.UserData
-import dagger.Provides
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import javax.inject.Singleton

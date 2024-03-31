@@ -1,12 +1,12 @@
-package com.example.githubtracker.navigation
+package com.example.githubtracker.presentation.navigation
 
 import android.app.Activity
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.example.githubtracker.home.HomeScreen
-import com.example.githubtracker.sign_in.presentation.SignInScreen
+import com.example.githubtracker.presentation.home.HomeScreen
+import com.example.githubtracker.presentation.sign_in.SignInScreen
 
 @Composable
 fun NavigationGraph(

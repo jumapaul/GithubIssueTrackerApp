@@ -1,11 +1,10 @@
-package com.example.githubtracker.sign_in.presentation
+package com.example.githubtracker.presentation.sign_in
 
 import android.app.Activity
-import android.content.SharedPreferences
 import androidx.lifecycle.ViewModel
 import com.example.githubtracker.common.Resource
 import com.example.githubtracker.common.converters.toJson
-import com.example.githubtracker.sign_in.domain.model.UserData
+import com.example.githubtracker.domain.UserData
 import com.example.githubtracker.util.DataStoreUtils
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.OAuthCredential

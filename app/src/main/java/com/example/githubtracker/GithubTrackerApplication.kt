@@ -1,4 +1,4 @@
-package com.example.githubtracker.di
+package com.example.githubtracker
 
 import android.app.Application
 import dagger.hilt.android.HiltAndroidApp

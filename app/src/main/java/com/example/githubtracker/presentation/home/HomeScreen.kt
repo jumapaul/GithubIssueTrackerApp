@@ -1,4 +1,4 @@
-package com.example.githubtracker.home
+package com.example.githubtracker.presentation.home
 
 import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
@@ -56,15 +56,10 @@ fun HomeScreen(
                     LoadImageComposables(url = userData?.profilePicture.orEmpty())
                 }
 
+                val userData = homeViewmodel.getRepositoryList("user:jumapaul is:public sort:updated")
+
+                Log.d("---------->", "HomeScreen: $userData")
             }
         }
     }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun HomeScreenPreview(
-    homeViewmodel: HomeViewmodel = hiltViewModel()
-) {
-    HomeScreen()
 }

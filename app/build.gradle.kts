@@ -3,8 +3,13 @@ plugins {
     alias(libs.plugins.jetbrainsKotlinAndroid)
     alias(libs.plugins.hilt.android)
     alias(libs.plugins.ksp)
-    alias(libs.plugins.kotlin.kapt)
     id("com.google.gms.google-services")
+    id("com.apollographql.apollo3")
+}
+
+apollo {
+    generateKotlinModels.set(true)
+    packageNamesFromFilePaths()
 }
 
 android {
@@ -78,8 +83,8 @@ dependencies {
 
     //hilt
     implementation(libs.hilt.android)
-    kapt(libs.google.hilt.compiler)
-    kapt(libs.hilt.compiler)
+    ksp(libs.google.hilt.compiler)
+    ksp(libs.hilt.compiler)
     implementation(libs.hilt.navigation)
 
     //Accompanist
@@ -107,4 +112,7 @@ dependencies {
 
     //glide
     implementation(libs.coil.compose)
+
+    //apollo
+    implementation(libs.apollo.runtime)
 }
