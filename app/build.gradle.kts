@@ -115,4 +115,6 @@ dependencies {
 
     //apollo
     implementation(libs.apollo.runtime)
+    //okhttp logging
+    implementation(libs.logging.interceptor)
 }

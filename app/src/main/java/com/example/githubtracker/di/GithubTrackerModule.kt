@@ -14,6 +14,7 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import javax.inject.Singleton
 
 
@@ -42,7 +43,12 @@ object GithubTrackerModule {
     @Provides
     @Singleton
     fun provideApolloClient(@ApplicationContext context: Context): ApolloClient =
-        ApolloClient.Builder().serverUrl(BASE_URL).okHttpClient(
-            OkHttpClient.Builder().addInterceptor(AuthenticationInterceptor(context)).build()
-        ).build()
+        ApolloClient.Builder().serverUrl(BASE_URL)
+            .okHttpClient(
+                OkHttpClient.Builder()
+                    .addInterceptor(AuthenticationInterceptor(context))
+                    .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
+                    .build()
+            )
+            .build()
 }

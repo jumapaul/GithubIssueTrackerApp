@@ -1,5 +1,6 @@
 package com.example.githubtracker.presentation.home
 
+import UserRepositoryQuery
 import android.content.Context
 import android.content.SharedPreferences
 import android.util.Log
@@ -14,6 +15,7 @@ import com.example.githubtracker.domain.UserData
 import com.example.githubtracker.domain.use_cases.HomeUseCase
 import com.example.githubtracker.util.DataStoreUtils
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
@@ -26,13 +28,22 @@ class HomeViewmodel @Inject constructor(
     private val _repoList = mutableStateOf(HomeUiState())
     val repoList: State<HomeUiState> = _repoList
 
-    fun getUserInfo(context: Context): UserData? {
-        return getUser(context)
+    private var _user = mutableStateOf<UserData?>(null)
+    val user = _user
+
+    private var _repoVisibility = mutableStateOf("public")
+    val repoVisibility = _repoVisibility
+
+
+    fun getUserInfo(context: Context) {
+        //user:${user.value?.userName}
+        _user.value = getUser(context)
+        getRepositoryList("is:${repoVisibility.value} sort:updated")
     }
 
     fun getRepositoryList(queryString: String) {
+        Log.d("RES--------->", "getRepositoryList: ${queryString}")
         homeUseCase(queryString).onEach { result ->
-            Log.d("----------------------->", "getRepositoryList: ${result?.data}")
             when (result) {
                 is Resource.Error -> {
                     _repoList.value =
