@@ -56,9 +56,11 @@ class HomeViewmodel @Inject constructor(
         }.launchIn(viewModelScope)
     }
 
-    fun searchIssues(query: String){
-        _issuesList.value.data!!.filter { issues->
+    fun searchIssues(query: String): List<UserRepositoryQuery.Node?> {
+        val searchedData = _issuesList.value.data!!.filter { issues ->
             issues!!.title.contains(query)
         }
+
+        return searchedData
     }
 }

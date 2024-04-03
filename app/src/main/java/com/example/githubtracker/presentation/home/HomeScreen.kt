@@ -62,7 +62,6 @@ fun HomeScreen(
     homeViewmodel: HomeViewmodel = hiltViewModel()
 ) {
 
-    val issuesSearch = homeViewmodel.issuesList.value.data
     val context = LocalContext.current
     val issues = homeViewmodel.issuesList.value
 
@@ -77,6 +76,9 @@ fun HomeScreen(
 
     val user = getUser(context)?.userName
     val issueState = listOf("Open", "Closed", "All")
+
+
+    val searchedData = homeViewmodel.searchIssues(issueName)
 
 
     val labels = listOf(
@@ -138,6 +140,7 @@ fun HomeScreen(
                     onValueChange = {
                         issueName = it
                     },
+                    maxLines = 1,
                     shape = RoundedCornerShape(10.dp),
                     placeholder = {
                         Text(text = "Enter issue name")
@@ -187,33 +190,77 @@ fun HomeScreen(
                 }
 
                 Spacer(modifier = modifier.height(10.dp))
-                LazyColumn(
-                    verticalArrangement = Arrangement.spacedBy(10.dp),
-                    horizontalAlignment = Alignment.Start,
-                ) {
 
-                    items(issues.data) { item ->
 
-                        val time = item!!.createdAt.toString()
-                        val localTime = ZonedDateTime.parse(time)
-                        val formatter = DateTimeFormatter.ofPattern("EE dd/MM/yyyy hh:mm:ss a")
-                        val convertedTime = localTime.format(formatter)
-                        val label = item.labels!!.nodes.orEmpty()
+                if (searchedData.isNotEmpty()) {
 
-                        IssuesListingComposable(
-                            issueName = item.title,
-                            createdAt = convertedTime,
-                            labels = label,
-                            onclick = {
+                    LazyColumn(
+                        verticalArrangement = Arrangement.spacedBy(10.dp),
+                        horizontalAlignment = Alignment.Start,
+                    ) {
+                        items(searchedData) { item ->
 
-                                Toast.makeText(
-                                    context,
-                                    "Size labels ${label.size}",
-                                    Toast.LENGTH_LONG
-                                ).show()
-                            })
+                            val time = item!!.createdAt.toString()
+                            val localTime = ZonedDateTime.parse(time)
+                            val formatter =
+                                DateTimeFormatter.ofPattern("EE dd/MM/yyyy hh:mm:ss a")
+                            val convertedTime = localTime.format(formatter)
+                            val label = item.labels!!.nodes.orEmpty()
+
+                            IssuesListingComposable(
+                                issueName = item.title,
+                                createdAt = convertedTime,
+                                labels = label,
+                                onclick = {
+
+                                    Toast.makeText(
+                                        context,
+                                        "Size labels ${label.size}",
+                                        Toast.LENGTH_LONG
+                                    ).show()
+                                })
+
+                        }
 
                     }
+                } else if (issues.data.isNotEmpty()) {
+                    LazyColumn(
+                        verticalArrangement = Arrangement.spacedBy(10.dp),
+                        horizontalAlignment = Alignment.Start,
+                    ) {
+                        items(issues.data) { item ->
+
+                            val time = item!!.createdAt.toString()
+                            val localTime = ZonedDateTime.parse(time)
+                            val formatter =
+                                DateTimeFormatter.ofPattern("EE dd/MM/yyyy hh:mm:ss a")
+                            val convertedTime = localTime.format(formatter)
+                            val label = item.labels!!.nodes.orEmpty()
+
+                            IssuesListingComposable(
+                                issueName = item.title,
+                                createdAt = convertedTime,
+                                labels = label,
+                                onclick = {
+
+                                    Toast.makeText(
+                                        context,
+                                        "Size labels ${label.size}",
+                                        Toast.LENGTH_LONG
+                                    ).show()
+                                })
+
+                        }
+                    }
+                } else if (issueName.isNotEmpty() && searchedData.isEmpty()) {
+                    Column(
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Text(text = "No results found")
+                    }
+                }
+
 
 //                    items(repos.data) { item ->
 ////                        val time = item?.repo?.onRepository?.createdAt.toString()
@@ -235,33 +282,32 @@ fun HomeScreen(
 //                            }
 //                        )
 //                    }
-                }
             }
+        }
 
-            if (issues.errorMessage.isNotBlank()) {
-                Column(
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = modifier.fillMaxSize()
-                ) {
-                    Text(
-                        text = issues.errorMessage,
-                        color = MaterialTheme.colorScheme.error,
-                        modifier = modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 20.dp),
-                        textAlign = TextAlign.Center
+        if (issues.errorMessage.isNotBlank()) {
+            Column(
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = modifier.fillMaxSize()
+            ) {
+                Text(
+                    text = issues.errorMessage,
+                    color = MaterialTheme.colorScheme.error,
+                    modifier = modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 20.dp),
+                    textAlign = TextAlign.Center
+                )
+
+                IconButton(onClick = { isRefreshing = true }) {
+                    Icon(
+                        imageVector = Icons.Default.Refresh, contentDescription = null,
                     )
+                }
 
-                    IconButton(onClick = { isRefreshing = true }) {
-                        Icon(
-                            imageVector = Icons.Default.Refresh, contentDescription = null,
-                        )
-                    }
-
-                    if (isRefreshing) {
-                        homeViewmodel.issuesList.value
-                    }
+                if (isRefreshing) {
+                    homeViewmodel.issuesList.value
                 }
             }
         }
