@@ -17,7 +17,7 @@ query UserRepository($queryString: String!) {
                             title
                             createdAt
                             updatedAt
-                            labels(first: 5) {
+                            labels(first: 10) {
                                 nodes {
                                     name
                                     color

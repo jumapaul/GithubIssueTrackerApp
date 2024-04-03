@@ -13,6 +13,6 @@ fun RepoDetailScreen(){
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
-        Text(text = "Detail Screen")
+
     }
 }

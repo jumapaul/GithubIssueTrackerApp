@@ -2,6 +2,7 @@ package com.example.githubtracker.presentation.home
 
 import android.os.Build
 import android.util.Log
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -47,8 +48,9 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.githubtracker.common.composables.LoadImageComposables
-import com.example.githubtracker.presentation.home.composables.RepositoryListingComposable
-import com.example.githubtracker.presentation.navigation.NavigationRoutes
+import com.example.githubtracker.common.getUser
+import com.example.githubtracker.presentation.home.composables.GetLabelListing
+import com.example.githubtracker.presentation.home.composables.IssuesListingComposable
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 
@@ -60,21 +62,43 @@ fun HomeScreen(
     homeViewmodel: HomeViewmodel = hiltViewModel()
 ) {
 
+    val issuesSearch = homeViewmodel.issuesList.value.data
     val context = LocalContext.current
-    val repos = homeViewmodel.repoList.value
-    var userName by remember {
+    val issues = homeViewmodel.issuesList.value
+
+    Log.d("------>", "HomeScreen: $issues")
+
+    var issueName by remember {
         mutableStateOf("")
     }
     var isRefreshing by remember {
         mutableStateOf(false)
     }
 
+    val user = getUser(context)?.userName
+    val issueState = listOf("Open", "Closed", "All")
+
+
+    val labels = listOf(
+        "Bug",
+        "Documentation",
+        "Duplicate",
+        "Enhancement",
+        "Good first issue",
+        "Help wanted",
+        "Invalid",
+        "Question",
+        "Wontfix"
+
+    )
+
+
     LaunchedEffect(context) {
-        homeViewmodel.getUserInfo(context)
+        homeViewmodel.getUserInfo(context, user)
     }
 
     Box(modifier = modifier.fillMaxSize()) {
-        if (repos.data?.isEmpty() == true) {
+        if (issues.data?.isEmpty() == true) {
             CircularProgressIndicator(
                 modifier = Modifier.align(Alignment.Center),
                 color = Color.Blue,
@@ -82,7 +106,7 @@ fun HomeScreen(
             )
         }
 
-        if (repos.data?.isNotEmpty() == true) {
+        if (issues.data?.isNotEmpty() == true) {
             Column(
                 verticalArrangement = Arrangement.Top,
                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -110,13 +134,13 @@ fun HomeScreen(
                 Spacer(modifier = modifier.height(15.dp))
 
                 OutlinedTextField(
-                    value = userName,
+                    value = issueName,
                     onValueChange = {
-                        userName = it
+                        issueName = it
                     },
                     shape = RoundedCornerShape(10.dp),
                     placeholder = {
-                        Text(text = "Enter Username")
+                        Text(text = "Enter issue name")
                     },
                     leadingIcon = {
                         Icon(imageVector = Icons.Default.Search, contentDescription = null)
@@ -128,7 +152,8 @@ fun HomeScreen(
                     ),
                     keyboardActions = KeyboardActions(
                         onSearch = {
-                            homeViewmodel.getRepositoryList("user:${userName.trim()} is:public sort:updated")
+//                            homeViewmodel.getIssuesList("user:${userName.trim()} is:public sort:updated")
+                            homeViewmodel.getIssuesList(issueName)
                         }
                     )
                 )
@@ -136,44 +161,91 @@ fun HomeScreen(
 
                 Spacer(modifier = modifier.height(15.dp))
 
+                Row(
+                    modifier = modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Start
+                ) {
+
+                }
+
                 Text(
-                    text = "List Of Repositories",
+                    text = "List Of Issues",
                     modifier = modifier.fillMaxWidth(),
                     textAlign = TextAlign.Center,
                     style = MaterialTheme.typography.bodyMedium,
                     fontWeight = FontWeight.Bold
                 )
 
+                Spacer(modifier = modifier.height(10.dp))
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(10.dp),
+                    modifier = modifier.fillMaxWidth()
+                ) {
+                    GetLabelListing(title = issueState.first(), labels = issueState)
+                    GetLabelListing(title = labels.first(), labels = labels)
+                }
+
+                Spacer(modifier = modifier.height(10.dp))
                 LazyColumn(
                     verticalArrangement = Arrangement.spacedBy(10.dp),
                     horizontalAlignment = Alignment.Start,
                 ) {
 
-                    items(repos.data) { item ->
-                        val time = item?.repo?.onRepository?.createdAt.toString()
+                    items(issues.data) { item ->
+
+                        val time = item!!.createdAt.toString()
                         val localTime = ZonedDateTime.parse(time)
-                        val formatter = DateTimeFormatter.ofPattern("EE dd/MM/yyy hh:mm:ss a")
+                        val formatter = DateTimeFormatter.ofPattern("EE dd/MM/yyyy hh:mm:ss a")
                         val convertedTime = localTime.format(formatter)
-                        RepositoryListingComposable(
-                            repositoryName = item?.repo?.onRepository?.name.orEmpty(),
+                        val label = item.labels!!.nodes.orEmpty()
+
+                        IssuesListingComposable(
+                            issueName = item.title,
                             createdAt = convertedTime,
+                            labels = label,
                             onclick = {
-                                navController.navigate(NavigationRoutes.RepoDetailScreen.routes)
-                            }
-                        )
+
+                                Toast.makeText(
+                                    context,
+                                    "Size labels ${label.size}",
+                                    Toast.LENGTH_LONG
+                                ).show()
+                            })
+
                     }
+
+//                    items(repos.data) { item ->
+////                        val time = item?.repo?.onRepository?.createdAt.toString()
+////                        val localTime = ZonedDateTime.parse(time)
+////                        val formatter = DateTimeFormatter.ofPattern("EE dd/MM/yyy hh:mm:ss a")
+////                        val convertedTime = localTime.format(formatter)
+//                        RepositoryListingComposable(
+//                            repositoryName = item?.repo?.onRepository?.name.orEmpty(),
+//                            createdAt = convertedTime,
+//                            onclick = {
+//                                val repoDetails = item?.repo?.onRepository?.let {
+//                                    RepositoryDetails(
+//                                        repositoryName = item.repo.onRepository.name,
+//                                        issues = it.issues,
+//                                    )
+//                                }
+//                                val stringRepoDetails = repoDetails.toJson()
+//                                navController.navigate(NavigationRoutes.RepoDetailScreen.routes + "/$stringRepoDetails")
+//                            }
+//                        )
+//                    }
                 }
             }
 
-            if (repos.errorMessage.isNotBlank()) {
-                Log.d("-------->", "HomeScreen: ${repos.errorMessage}")
+            if (issues.errorMessage.isNotBlank()) {
                 Column(
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally,
                     modifier = modifier.fillMaxSize()
                 ) {
                     Text(
-                        text = repos.errorMessage,
+                        text = issues.errorMessage,
                         color = MaterialTheme.colorScheme.error,
                         modifier = modifier
                             .fillMaxWidth()
@@ -188,7 +260,7 @@ fun HomeScreen(
                     }
 
                     if (isRefreshing) {
-                        homeViewmodel.repoList.value
+                        homeViewmodel.issuesList.value
                     }
                 }
             }

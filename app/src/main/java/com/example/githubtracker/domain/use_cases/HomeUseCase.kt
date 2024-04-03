@@ -10,7 +10,7 @@ import javax.inject.Inject
 class HomeUseCase @Inject constructor(
     private val gitHubService: GitHubService
 ) {
-    operator fun invoke(userQuery: String): Flow<Resource<UserRepositoryQuery.Search?>?> = flow {
+    operator fun invoke(userQuery: String): Flow<Resource<List<UserRepositoryQuery.Node?>>?> = flow {
         val response =
             Resource.Success(data = gitHubService.getRepositoriesByUserName(query = userQuery))
         emit(response.data)

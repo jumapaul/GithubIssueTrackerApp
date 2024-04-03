@@ -9,12 +9,17 @@ import javax.inject.Inject
 class GitHubService @Inject constructor(val client: ApolloClient) {
     //model a data class to hold both success or error response
     //the query input should be a string modeled in the format: "user:jumapaul is:public sort:updated",
-    suspend fun getRepositoriesByUserName(query: String): Resource<UserRepositoryQuery.Search?> {
+    suspend fun getRepositoriesByUserName(query: String): Resource<List<UserRepositoryQuery.Node?>> {
         val response = client.query(UserRepositoryQuery(query)).execute()
         return if (response.hasErrors()) {
             Resource.Error(message = response.errors?.first()?.message.orEmpty())
         } else {
-            Resource.Success(data = response.data?.search)
+
+            val result = response.data?.search?.repos?.flatMap {
+                it?.repo?.onRepository?.issues?.nodes?.toList() ?: emptyList()
+            } ?: emptyList()
+
+            Resource.Success(data = result)
         }
     }
 }

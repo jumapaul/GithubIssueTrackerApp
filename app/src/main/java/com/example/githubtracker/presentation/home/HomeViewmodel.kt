@@ -1,21 +1,16 @@
 package com.example.githubtracker.presentation.home
 
-import UserRepositoryQuery
 import android.content.Context
-import android.content.SharedPreferences
 import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.githubtracker.common.Resource
-import com.example.githubtracker.common.converters.fromJson
 import com.example.githubtracker.common.getUser
 import com.example.githubtracker.domain.UserData
 import com.example.githubtracker.domain.use_cases.HomeUseCase
-import com.example.githubtracker.util.DataStoreUtils
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
@@ -25,43 +20,45 @@ class HomeViewmodel @Inject constructor(
     private val homeUseCase: HomeUseCase
 ) : ViewModel() {
 
-    private val _repoList = mutableStateOf(HomeUiState())
-    val repoList: State<HomeUiState> = _repoList
+    private val _issuesList = mutableStateOf(HomeUiState())
+    val issuesList: State<HomeUiState> = _issuesList
 
     private var _user = mutableStateOf<UserData?>(null)
     val user = _user
 
-    private var _repoVisibility = mutableStateOf("public")
-    val repoVisibility = _repoVisibility
 
-
-    fun getUserInfo(context: Context) {
-        //user:${user.value?.userName}
+    fun getUserInfo(context: Context, user: String?) {
         _user.value = getUser(context)
-        getRepositoryList("is:${repoVisibility.value} sort:updated")
+        getIssuesList("user:$user is:public sort:updated")
     }
 
-    fun getRepositoryList(queryString: String) {
-        Log.d("RES--------->", "getRepositoryList: ${queryString}")
+    fun getIssuesList(queryString: String) {
         homeUseCase(queryString).onEach { result ->
+
             when (result) {
                 is Resource.Error -> {
-                    _repoList.value =
+                    _issuesList.value =
                         HomeUiState(errorMessage = result.message ?: "Unexpected error occurred")
                 }
 
                 is Resource.Loading -> {
-                    _repoList.value = HomeUiState(isLoading = true)
+                    _issuesList.value = HomeUiState(isLoading = true)
                 }
 
                 is Resource.Success -> {
-                    _repoList.value = HomeUiState(
-                        data = result.data?.repos
+                    _issuesList.value = HomeUiState(
+                        data = result.data
                     )
                 }
 
                 null -> TODO()
             }
         }.launchIn(viewModelScope)
+    }
+
+    fun searchIssues(query: String){
+        _issuesList.value.data!!.filter { issues->
+            issues!!.title.contains(query)
+        }
     }
 }

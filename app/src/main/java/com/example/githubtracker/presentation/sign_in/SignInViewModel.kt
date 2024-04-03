@@ -1,6 +1,7 @@
 package com.example.githubtracker.presentation.sign_in
 
 import android.app.Activity
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.example.githubtracker.common.Resource
 import com.example.githubtracker.common.converters.toJson
@@ -29,15 +30,21 @@ class SignInViewModel @Inject constructor(
         firebaseAuth.startActivityForSignInWithProvider(activity, provider.build())
             .addOnSuccessListener { authResult ->
 
+                Log.d("---------->", "signInWithGithub: ${authResult.additionalUserInfo?.username}")
+
                 val credential = authResult.credential
                 if (credential is OAuthCredential) {
                     val name = authResult.user?.displayName
+                    val userName = authResult.additionalUserInfo?.username
                     val profilePicture = authResult.user?.photoUrl
                     val accessToken = credential.accessToken.orEmpty()
 
                     val user = UserData(
-                        accessToken, name, profilePicture.toString()
-                    )
+                        accessToken = accessToken,
+                        name = name.orEmpty(),
+                        userName = userName,
+                        profilePicture = profilePicture.toString(),
+                        )
 
                     _authState.value = Resource.Success(
                         data = user
