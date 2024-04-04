@@ -45,21 +45,24 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import com.example.githubtracker.common.composables.LoadImageComposables
 import com.example.githubtracker.common.getUser
 import com.example.githubtracker.presentation.home.composables.GetLabelListing
 import com.example.githubtracker.presentation.home.composables.IssuesListingComposable
+import com.example.githubtracker.presentation.navigation.NavigationRoutes
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun HomeScreen(
+    navController: NavController,
     modifier: Modifier = Modifier,
     homeViewmodel: HomeViewmodel = hiltViewModel()
 ) {
 
     val context = LocalContext.current
     val issues = homeViewmodel.homeUiState.collectAsState().value
-
+    val authStatus = homeViewmodel.isAuthenticated.collectAsState().value
 
     var issueName by remember {
         mutableStateOf("")
@@ -223,6 +226,10 @@ fun HomeScreen(
                     textAlign = TextAlign.Center
                 )
             }
+        }
+
+        if (!authStatus) {
+            navController.navigate(NavigationRoutes.SignInScreen.routes)
         }
     }
 }

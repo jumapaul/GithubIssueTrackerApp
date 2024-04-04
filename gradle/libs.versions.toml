@@ -28,7 +28,6 @@ firebaseAuth = "22.3.1"
 datastore-preferences = "1.0.0"
 gson = "2.10.1"
 coil-compose = "2.0.0-rc01"
-#material3Android = "1.2.1"
 
 
 
@@ -76,7 +75,6 @@ datastore-preferences = { group = "androidx.datastore", name = "datastore-prefer
 material-extended = { group = "androidx.compose.material", name = "material-icons-extended", version.ref = "material-extended" }
 gson = { group = "com.google.code.gson", name = "gson", version.ref = "gson" }
 coil-compose = { group = "io.coil-kt", name = "coil-compose", version.ref = "coil-compose" }
-#androidx-material3-android = { group = "androidx.compose.material3", name = "material3-android", version.ref = "material3Android" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

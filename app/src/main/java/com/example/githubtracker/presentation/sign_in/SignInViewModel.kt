@@ -29,9 +29,6 @@ class SignInViewModel @Inject constructor(
 
         firebaseAuth.startActivityForSignInWithProvider(activity, provider.build())
             .addOnSuccessListener { authResult ->
-
-                Log.d("---------->", "signInWithGithub: ${authResult.additionalUserInfo?.username}")
-
                 val credential = authResult.credential
                 if (credential is OAuthCredential) {
                     val name = authResult.user?.displayName

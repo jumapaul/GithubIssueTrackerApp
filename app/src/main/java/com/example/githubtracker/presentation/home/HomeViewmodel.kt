@@ -11,6 +11,7 @@ import com.example.githubtracker.common.Resource
 import com.example.githubtracker.common.getUser
 import com.example.githubtracker.domain.UserData
 import com.example.githubtracker.domain.use_cases.HomeUseCase
+import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -21,7 +22,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewmodel @Inject constructor(
-    private val homeUseCase: HomeUseCase
+    private val homeUseCase: HomeUseCase,
+    private val firebaseAuth: FirebaseAuth,
 ) : ViewModel() {
 
     private val _homeUiState: MutableStateFlow<HomeUiState> = MutableStateFlow(HomeUiState())
@@ -33,6 +35,17 @@ class HomeViewmodel @Inject constructor(
 
     private var _user = mutableStateOf<UserData?>(null)
     val user = _user
+
+    private var _isAuthenticated: MutableStateFlow<Boolean> = MutableStateFlow(true)
+    val isAuthenticated: StateFlow<Boolean> = _isAuthenticated.asStateFlow()
+
+    init {
+        checkAuthStatus()
+    }
+
+    private fun checkAuthStatus() {
+        _isAuthenticated.value = firebaseAuth.currentUser != null
+    }
 
 
     fun getUserInfo(context: Context, user: String?) {
@@ -73,7 +86,7 @@ class HomeViewmodel @Inject constructor(
             try {
                 _homeUiState.value = HomeUiState(
                     data = _issuesList.value!!.filter { issues ->
-                        issues!!.title.contains(query)
+                        issues!!.title.lowercase().contains(query.lowercase())
                     }
                 )
             } catch (e: Exception) {
