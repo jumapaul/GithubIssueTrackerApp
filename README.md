@@ -11,7 +11,7 @@ Sign in Screen             |  Home Screen             | Search isssue           
 #### Dark Theme
 Sign in Screen             |  Home Screen             | Search isssue               | Search Label
 :-------------------------:|:-------------------------:|:-------------------------:|:-------------------------:
-![Sign in image](images/home_screen.png)  |  ![Home screen image](images/movies_category.png)  | ![Search issue image](images/see_all_category.png) | ![Search label image](images/movie_detail.png)
+![Sign in image](images/5.jpeg)  |  ![Home screen image](images/6.jpeg)  | ![Search issue image](images/7.jpeg) | ![Search label image](images/8.jpeg)
 
 
 ### Tools and library
