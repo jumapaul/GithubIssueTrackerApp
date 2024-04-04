@@ -1,5 +1,6 @@
 package com.example.githubtracker.presentation.home
 
+import UserRepositoryQuery
 import android.content.Context
 import android.util.Log
 import androidx.compose.runtime.State
@@ -11,6 +12,9 @@ import com.example.githubtracker.common.getUser
 import com.example.githubtracker.domain.UserData
 import com.example.githubtracker.domain.use_cases.HomeUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
@@ -20,8 +24,12 @@ class HomeViewmodel @Inject constructor(
     private val homeUseCase: HomeUseCase
 ) : ViewModel() {
 
-    private val _issuesList = mutableStateOf(HomeUiState())
-    val issuesList: State<HomeUiState> = _issuesList
+    private val _homeUiState: MutableStateFlow<HomeUiState> = MutableStateFlow(HomeUiState())
+    val homeUiState: StateFlow<HomeUiState> = _homeUiState.asStateFlow()
+
+    private val _issuesList: MutableStateFlow<List<UserRepositoryQuery.Node?>?> = MutableStateFlow(
+        emptyList()
+    )
 
     private var _user = mutableStateOf<UserData?>(null)
     val user = _user
@@ -32,35 +40,67 @@ class HomeViewmodel @Inject constructor(
         getIssuesList("user:$user is:public sort:updated")
     }
 
-    fun getIssuesList(queryString: String) {
+    private fun getIssuesList(queryString: String) {
         homeUseCase(queryString).onEach { result ->
-
             when (result) {
                 is Resource.Error -> {
-                    _issuesList.value =
+                    _homeUiState.value =
                         HomeUiState(errorMessage = result.message ?: "Unexpected error occurred")
                 }
 
                 is Resource.Loading -> {
-                    _issuesList.value = HomeUiState(isLoading = true)
+                    _homeUiState.value = HomeUiState(isLoading = true)
                 }
 
                 is Resource.Success -> {
-                    _issuesList.value = HomeUiState(
+                    _issuesList.value = result.data
+                    _homeUiState.value = HomeUiState(
                         data = result.data
                     )
                 }
 
-                null -> TODO()
+                else -> {}
             }
         }.launchIn(viewModelScope)
     }
 
-    fun searchIssues(query: String): List<UserRepositoryQuery.Node?> {
-        val searchedData = _issuesList.value.data!!.filter { issues ->
-            issues!!.title.contains(query)
-        }
+    fun searchIssues(query: String) {
+        if (query.isEmpty()) {
+            _homeUiState.value = HomeUiState(
+                data = _issuesList.value
+            )
+        } else {
+            try {
+                _homeUiState.value = HomeUiState(
+                    data = _issuesList.value!!.filter { issues ->
+                        issues!!.title.contains(query)
+                    }
+                )
+            } catch (e: Exception) {
+                _homeUiState.value = HomeUiState(errorMessage = e.message ?: "An error occurred")
+            }
 
-        return searchedData
+        }
+    }
+
+    fun searchLabel(labels: List<String>) {
+        if (labels.isEmpty()) {
+            _homeUiState.value = HomeUiState(
+                data = _issuesList.value
+            )
+        } else {
+            try {
+                _homeUiState.value = HomeUiState(
+                    data = _issuesList.value?.filter { issue ->
+                        labels.all { label ->
+                            issue?.labels?.nodes?.any { it?.name?.lowercase() == label.lowercase() }
+                                ?: false
+                        }
+                    }
+                )
+            } catch (e: Exception) {
+                _homeUiState.value = HomeUiState(errorMessage = e.message ?: "An error occurred")
+            }
+        }
     }
 }

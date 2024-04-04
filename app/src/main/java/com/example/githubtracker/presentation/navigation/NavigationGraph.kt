@@ -27,7 +27,7 @@ fun NavigationGraph(
         }
 
         composable(NavigationRoutes.HomeScreen.routes) {
-            HomeScreen(navHostController)
+            HomeScreen()
         }
 
         composable(NavigationRoutes.RepoDetailScreen.routes) {

@@ -1,4 +1,4 @@
-query UserRepository($queryString: String!) {
+query UserRepository($queryString: String!, $issueState: [IssueState!]) {
     search(
         type: REPOSITORY,
         query: $queryString,
@@ -11,7 +11,7 @@ query UserRepository($queryString: String!) {
                     name
                     createdAt
                     updatedAt
-                    issues(first: 100) {
+                    issues(first: 100, states: $issueState) {
                         totalCount
                         nodes {
                             title

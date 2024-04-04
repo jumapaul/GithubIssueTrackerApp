@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -17,9 +18,11 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.ArrowDropUp
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -31,14 +34,12 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun GetLabelListing(
-    title: String,
     labels: List<String>,
+    selectedLabels: MutableState<List<String>>,
+    onCheck: () -> Unit,
     modifier: Modifier = Modifier
 ) {
 
-    val selectedString = remember {
-        mutableStateOf(title)
-    }
     var expanded by remember {
         mutableStateOf(false)
     }
@@ -59,7 +60,7 @@ fun GetLabelListing(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = modifier.padding(2.dp)
             ) {
-                Text(text = selectedString.value)
+                Text(text = "Labels")
 
                 IconButton(onClick = { expanded = !expanded }) {
                     Icon(
@@ -81,9 +82,8 @@ fun GetLabelListing(
                     verticalArrangement = Arrangement.spacedBy(10.dp)
                 ) {
                     items(labels) {
-                        Text(text = it, modifier.clickable {
-                            selectedString.value = it
-                        })
+
+                        GettingLabelIssues(labels = it, selectedLabels = selectedLabels, onCheck = { onCheck() })
                     }
                 }
             }
@@ -92,4 +92,34 @@ fun GetLabelListing(
 
     }
 
+}
+
+
+@Composable
+fun GettingLabelIssues(
+    labels: String,
+    selectedLabels: MutableState<List<String>>,
+    onCheck: () -> Unit
+) {
+
+    val isChecked = selectedLabels.value.contains(labels)
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(2.dp)
+    ) {
+        Checkbox(
+            checked = isChecked, onCheckedChange = { checked ->
+                selectedLabels.value = if (checked) {
+                    selectedLabels.value + labels
+                } else {
+                    selectedLabels.value - labels
+                }
+                onCheck()
+
+            },
+            modifier = Modifier.size(25.dp)
+        )
+
+        Text(text = labels)
+    }
 }
