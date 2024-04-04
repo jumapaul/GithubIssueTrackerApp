@@ -1,9 +1,7 @@
 # Project Title: Github issue tracker App
 
 ## Project Overview
-This android application is developed using kotlin and jetpack compose. 
-The app presents a list of issues from the open github GraphQL API. 
-It can search from the issue and has tags implementation
+This android application is developed using kotlin and jetpack compose. The app presents a list of issues from the open github GraphQL API. It can search from the issue and has tags implementation
 
 ## Architecture and Libraries
 
