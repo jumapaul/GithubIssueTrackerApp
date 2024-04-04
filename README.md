@@ -14,7 +14,7 @@ Sign in Screen             |  Home Screen             | Search isssue           
 ![Sign in image](images/5.jpeg)  |  ![Home screen image](images/6.jpeg)  | ![Search issue image](images/7.jpeg) | ![Search label image](images/8.jpeg)
 
 
-### Tools and library
+### Tools and library used
 The following tools and libraries were used to build this app;
 - [Kotlin](https://kotlinlang.org/) - Kotlin is a programming language that runs on JVM with immense support from Google and the entire tech community.
 - [Jetpack Compose](https://developer.android.com/jetpack/compose) - Jetpack Compose is the Android-recommended toolkit for building native UIs.It simplifies and accelerates UI development on Android. Quickly bring your app to life with less code, powerful tools, and intuitive Kotlin APIs.
