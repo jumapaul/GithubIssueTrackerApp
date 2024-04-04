@@ -96,11 +96,6 @@ dependencies {
     implementation(libs.lottie.compose)
     implementation(libs.accompanist.pager.indicators)
 
-    //Room
-    implementation(libs.room.runtime)
-    ksp(libs.room.compiler)
-    implementation(libs.room)
-
     //material extended
     implementation(libs.material.extended)
 

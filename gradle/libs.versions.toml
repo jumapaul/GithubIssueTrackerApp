@@ -19,12 +19,10 @@ hilt-compiler = "1.1.0"
 hilt-navigation = "1.1.0"
 ksp = "1.9.10-1.0.13"
 navigation-compose = "2.7.7"
-firebase = "4.4.1"
 material-extended = "1.6.1"
 accompanist-pager = "0.23.0"
 lottie-compose = "5.2.0"
 accompanist-pager-indicators = "0.23.0"
-room = "2.6.1"
 googleServices = "4.4.1"
 firebaseAuth = "22.3.1"
 datastore-preferences = "1.0.0"
@@ -71,10 +69,6 @@ accompanist-pager = { group = "com.google.accompanist", name = "accompanist-page
 lottie-compose = { group = "com.airbnb.android", name = "lottie-compose", version.ref = "lottie-compose" }
 accompanist-pager-indicators = { group = "com.google.accompanist", name = "accompanist-pager-indicators", version.ref = "accompanist-pager-indicators" }
 
-#room
-room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
-room = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
-room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
 google-services = { group = "com.google.gms", name = "google-services", version.ref = "googleServices" }
 firebase-auth = { group = "com.google.firebase", name = "firebase-auth", version.ref = "firebaseAuth" }
 
