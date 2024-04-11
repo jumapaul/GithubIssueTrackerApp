@@ -49,7 +49,7 @@ Everything involving the User Interface is stored here. Here we have the activit
 
 ## Getting Started
 
-To clone the GetMovies project and run it on your local machine, follow these steps:
+To clone the GithubIssueTrackerApp  project and run it on your local machine, follow these steps:
 
 - Open your command line interface and navigate to the directory where you want to store the project.
 - Type git clone https://github.com/jumapaul/GithubIssueTrackerApp.git and press Enter. This will download the project files to your local machine.
